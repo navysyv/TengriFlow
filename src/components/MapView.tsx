@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import L from "leaflet";
-import "leaflet.heat";
+import type * as LeafletNS from "leaflet";
 import { places, heatPoints, type Place } from "@/lib/places";
 
 interface MapViewProps {
@@ -10,45 +9,55 @@ interface MapViewProps {
   showHidden: boolean;
 }
 
-export function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps) {
+function MapViewInner({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const heatRef = useRef<L.Layer | null>(null);
-  const routeRef = useRef<L.Polyline | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+  const mapRef = useRef<LeafletNS.Map | null>(null);
+  const LRef = useRef<typeof LeafletNS | null>(null);
+  const heatRef = useRef<LeafletNS.Layer | null>(null);
+  const routeRef = useRef<LeafletNS.Polyline | null>(null);
+  const markersRef = useRef<LeafletNS.Marker[]>([]);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
+    let cancelled = false;
+    (async () => {
+      const L = (await import("leaflet")).default;
+      await import("leaflet.heat");
+      if (cancelled || !containerRef.current || mapRef.current) return;
+      LRef.current = L;
 
-    const map = L.map(containerRef.current, {
-      center: [41.7, 75.0],
-      zoom: 7,
-      zoomControl: true,
-      attributionControl: true,
-    });
-
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution: "© OpenStreetMap contributors © CARTO",
-      maxZoom: 19,
-      subdomains: "abcd",
-    }).addTo(map);
-
-    mapRef.current = map;
-
-    // Heatmap with smooth gradient (green -> yellow -> red)
-    const heat = (L as unknown as { heatLayer: (pts: [number, number, number][], opts: object) => L.Layer })
-      .heatLayer(heatPoints, {
-        radius: 55,
-        blur: 45,
-        minOpacity: 0.35,
-        maxZoom: 11,
-        gradient: { 0.2: "#34D399", 0.5: "#FBBF24", 0.8: "#F97316", 1.0: "#EF4444" },
+      const map = L.map(containerRef.current, {
+        center: [41.7, 75.0],
+        zoom: 7,
+        zoomControl: true,
+        attributionControl: true,
       });
-    heat.addTo(map);
-    heatRef.current = heat;
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        attribution: "© OpenStreetMap contributors © CARTO",
+        maxZoom: 19,
+        subdomains: "abcd",
+      }).addTo(map);
+
+      mapRef.current = map;
+
+      const heat = (L as unknown as { heatLayer: (pts: [number, number, number][], opts: object) => LeafletNS.Layer })
+        .heatLayer(heatPoints, {
+          radius: 55,
+          blur: 45,
+          minOpacity: 0.35,
+          maxZoom: 11,
+          gradient: { 0.2: "#34D399", 0.5: "#FBBF24", 0.8: "#F97316", 1.0: "#EF4444" },
+        });
+      heat.addTo(map);
+      heatRef.current = heat;
+
+      setReady(true);
+    })();
 
     return () => {
-      map.remove();
+      cancelled = true;
+      mapRef.current?.remove();
       mapRef.current = null;
     };
   }, []);
@@ -56,7 +65,8 @@ export function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewPro
   // Markers
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    const L = LRef.current;
+    if (!map || !L || !ready) return;
 
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
@@ -75,12 +85,13 @@ export function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewPro
       marker.on("click", () => onSelect(p));
       markersRef.current.push(marker);
     });
-  }, [onSelect, showHidden]);
+  }, [onSelect, showHidden, ready]);
 
   // Route line
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
+    const L = LRef.current;
+    if (!map || !L || !ready) return;
     if (routeRef.current) {
       routeRef.current.remove();
       routeRef.current = null;
@@ -91,7 +102,6 @@ export function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewPro
     const b = places.find((p) => p.id === routeTo);
     if (!a || !b) return;
 
-    // Simulate a curved path with intermediate waypoints
     const mid: [number, number] = [
       (a.coords[0] + b.coords[0]) / 2 + 0.15,
       (a.coords[1] + b.coords[1]) / 2 - 0.2,
@@ -110,15 +120,14 @@ export function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewPro
     }).addTo(map);
     routeRef.current = line;
     map.fitBounds(line.getBounds(), { padding: [80, 80] });
-  }, [routeFrom, routeTo]);
+  }, [routeFrom, routeTo, ready]);
 
   return <div ref={containerRef} className="h-full w-full rounded-2xl overflow-hidden" />;
 }
 
-// Fallback for SSR — never render server-side
 export default function MapViewSafe(props: MapViewProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   if (!mounted) return <div className="h-full w-full rounded-2xl bg-muted animate-pulse" />;
-  return <MapView {...props} />;
+  return <MapViewInner {...props} />;
 }
