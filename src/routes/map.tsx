@@ -123,12 +123,18 @@ function MapPage() {
                   <p className="text-sm text-muted-foreground mt-2 leading-relaxed flex-1">
                     {p.description[lang]}
                   </p>
-                  <button
-                    onClick={() => { setSelected(p); setBookOpen(true); }}
-                    className="mt-4 h-11 rounded-full border border-border font-semibold text-sm hover:bg-muted transition"
-                  >
-                    {t("map.book")}
-                  </button>
+                  {p.bookable ? (
+                    <button
+                      onClick={() => { setSelected(p); setBookOpen(true); }}
+                      className="mt-4 h-11 rounded-full border border-border font-semibold text-sm hover:bg-muted transition"
+                    >
+                      {t("map.book")}
+                    </button>
+                  ) : (
+                    <span className="mt-4 h-11 rounded-full bg-muted/60 text-muted-foreground font-medium text-xs flex items-center justify-center px-3 text-center">
+                      {lang === "RU" ? "Исторический памятник — без брони" : lang === "KG" ? "Тарыхый эстелик — брондоо жок" : "Protected site — no booking"}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -147,12 +153,18 @@ function MapPage() {
           <div className="p-5">
             <h3 className="font-bold text-lg">{selected.name}</h3>
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{selected.description[lang]}</p>
-            <button
-              onClick={() => setBookOpen(true)}
-              className="mt-4 w-full h-11 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
-            >
-              {t("map.bookNow")}
-            </button>
+            {selected.bookable ? (
+              <button
+                onClick={() => setBookOpen(true)}
+                className="mt-4 w-full h-11 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition"
+              >
+                {t("map.bookNow")}
+              </button>
+            ) : (
+              <p className="mt-4 text-xs text-muted-foreground text-center">
+                {lang === "RU" ? "Исторический объект — посещение свободное, без брони." : lang === "KG" ? "Тарыхый объект — эркин кирүү, брондоо жок." : "Protected historical site — free visit, no booking."}
+              </p>
+            )}
           </div>
         </div>
       )}

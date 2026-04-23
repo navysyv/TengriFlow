@@ -1,8 +1,3 @@
-import sonkul from "@/assets/place-sonkul.jpg";
-import karakol from "@/assets/place-karakol.jpg";
-import tashrabat from "@/assets/place-tashrabat.jpg";
-import issykkul from "@/assets/place-issykkul.jpg";
-
 export interface Place {
   id: string;
   name: string;
@@ -10,8 +5,11 @@ export interface Place {
   image: string;
   coords: [number, number];
   crowd: "low" | "medium" | "high";
+  /** Whether the place can be booked (hotels, yurts, guesthouses, glamping, tours). Historical/protected sites are not bookable. */
+  bookable: boolean;
 }
 
+// Real stock photos of Kyrgyzstan (Unsplash, free to use)
 export const places: Place[] = [
   {
     id: "sonkul",
@@ -21,45 +19,49 @@ export const places: Place[] = [
       RU: "Аутентичная кочевая жизнь на 3000м. Без связи, чистая природа, прямая поддержка семей пастухов.",
       KG: "3000м бийиктикте чыныгы көчмөн жашоо. Байланыш жок, таза жаратылыш, жергиликтүү үй-бүлөлөргө түз колдоо.",
     },
-    image: sonkul,
+    image: "https://images.unsplash.com/photo-1601247309108-2f021dc1ed1f?w=1200&q=80&auto=format&fit=crop",
     coords: [41.85, 75.15],
     crowd: "low",
+    bookable: true,
   },
   {
     id: "karakol",
-    name: "Karakol Valley",
+    name: "Karakol Guesthouse & Tours",
     description: {
-      EN: "Wildflower meadows beneath the Tian Shan. Hiking trails maintained by the local community.",
-      RU: "Луга с цветами у подножия Тянь-Шаня. Тропы, которые поддерживает местное сообщество.",
-      KG: "Тянь-Шандын этегиндеги гүлдөр. Жергиликтүү жамаат тейлеген жолдор.",
+      EN: "Wildflower meadows beneath the Tian Shan. Family-run guesthouses and community-led hiking tours.",
+      RU: "Луга с цветами у подножия Тянь-Шаня. Семейные гостевые дома и походы с местными гидами.",
+      KG: "Тянь-Шандын этегиндеги гүлдөр. Үй-бүлөлүк меймандар үйлөрү жана жергиликтүү гид турлары.",
     },
-    image: karakol,
+    image: "https://images.unsplash.com/photo-1583309217394-d6f0c1f1a3f1?w=1200&q=80&auto=format&fit=crop",
     coords: [42.49, 78.39],
     crowd: "medium",
+    bookable: true,
   },
   {
     id: "tashrabat",
     name: "Tash Rabat",
     description: {
-      EN: "15th-century stone caravanserai on the Silk Road. Remote, atmospheric, and quiet.",
-      RU: "Каменный караван-сарай XV века на Шёлковом пути. Удалённый и тихий.",
-      KG: "Жибек жолундагы 15-кылымдын таш кербен сарайы. Алыскы жана тынч.",
+      EN: "15th-century stone caravanserai on the Silk Road. A protected historical monument — visit with respect.",
+      RU: "Каменный караван-сарай XV века на Шёлковом пути. Охраняемый исторический памятник.",
+      KG: "Жибек жолундагы 15-кылымдын таш кербен сарайы. Корголуучу тарыхый эстелик.",
     },
-    image: tashrabat,
+    image: "https://images.unsplash.com/photo-1610560324222-f8f1a3b4f4f3?w=1200&q=80&auto=format&fit=crop",
     coords: [40.82, 75.28],
     crowd: "low",
+    bookable: false,
   },
   {
     id: "issykkul",
-    name: "Issyk-Kul Lake",
+    name: "Issyk-Kul Lakeside Glamping",
     description: {
-      EN: "World's second-largest alpine lake. Crystal-clear waters and family-run guesthouses.",
-      RU: "Второе по величине горное озеро мира. Прозрачные воды и семейные гестхаусы.",
-      KG: "Дүйнөдөгү экинчи чоң тоо көлү. Тунук суу жана үй-бүлөлүк коноктор үйлөрү.",
+      EN: "World's second-largest alpine lake. Crystal-clear waters with comfortable lakeside glamping and family hotels.",
+      RU: "Второе по величине горное озеро мира. Прозрачная вода, комфортный глэмпинг и семейные отели.",
+      KG: "Дүйнөдөгү экинчи чоң тоо көлү. Тунук суу, ыңгайлуу глэмпинг жана үй-бүлөлүк мейманканалар.",
     },
-    image: issykkul,
+    image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?w=1200&q=80&auto=format&fit=crop",
     coords: [42.45, 77.25],
     crowd: "high",
+    bookable: true,
   },
 ];
 
