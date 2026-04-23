@@ -4,11 +4,12 @@ import { SmartImage } from "@/components/SmartImage";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight, Map, MessageCircle, Wallet, Compass, MapPin } from "lucide-react";
 
-// Real photos of Kyrgyzstan — Tian Shan, Song-Köl yurts, Issyk-Kul, nomadic life
+// STRICT KYRGYZSTAN-ONLY: All images sourced from Wikimedia Commons (location-verified).
+// Ala-Archa, Tian Shan, Song-Köl, Issyk-Kul — no generic global stock.
 const heroMountains = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg/1600px-Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg";
-const heroFriends = "https://images.pexels.com/photos/12530881/pexels-photo-12530881.jpeg?auto=compress&cs=tinysrgb&w=1600";
-const localCulture = "https://images.pexels.com/photos/16022118/pexels-photo-16022118.jpeg?auto=compress&cs=tinysrgb&w=1000";
-const pureNature = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Lake_Issyk_Kul.jpg/1000px-Lake_Issyk_Kul.jpg";
+const heroFriends = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Jeti-%C3%96g%C3%BCz_Rocks_-_Issyk-Kul_Region%2C_Jeti-Oguz_District.jpg/1280px-Jeti-%C3%96g%C3%BCz_Rocks_-_Issyk-Kul_Region%2C_Jeti-Oguz_District.jpg";
+const localCulture = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Kyrgyz_Yurt%2C_Kyrgyzstan.jpg/1280px-Kyrgyz_Yurt%2C_Kyrgyzstan.jpg";
+const pureNature = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Lake_Issyk-Kul%2C_Kyrgyzstan.jpg/1280px-Lake_Issyk-Kul%2C_Kyrgyzstan.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
