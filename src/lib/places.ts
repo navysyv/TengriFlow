@@ -20,8 +20,8 @@ export const places: Place[] = [
       RU: "Аутентичная кочевая жизнь на 3000м. Без связи, чистая природа, прямая поддержка семей пастухов.",
       KG: "3000м бийиктикте чыныгы көчмөн жашоо. Байланыш жок, таза жаратылыш, жергиликтүү үй-бүлөлөргө түз колдоо.",
     },
-    // Yurts on Song-Köl plateau, Kyrgyzstan (Wikimedia Commons)
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Song_Kol_Lake_Kyrgyzstan.jpg/1200px-Song_Kol_Lake_Kyrgyzstan.jpg",
+    // Song-Köl, Kyrgyzstan — Wikimedia Commons (verified)
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Song-Kul%2C_Kyrgyzstan_%28Unsplash%29.jpg/1280px-Song-Kul%2C_Kyrgyzstan_%28Unsplash%29.jpg",
     coords: [41.85, 75.15],
     crowd: "low",
     bookable: true,
@@ -34,8 +34,8 @@ export const places: Place[] = [
       RU: "Луга с цветами у подножия Тянь-Шаня. Семейные гостевые дома и походы с местными гидами.",
       KG: "Тянь-Шандын этегиндеги гүлдөр. Үй-бүлөлүк меймандар үйлөрү жана жергиликтүү гид турлары.",
     },
-    // Karakol valley / Tian Shan, Kyrgyzstan (Wikimedia Commons)
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Karakol_Valley_Kyrgyzstan.jpg/1200px-Karakol_Valley_Kyrgyzstan.jpg",
+    // Jeti-Ögüz Rocks, Karakol / Issyk-Kul Region, Kyrgyzstan — Wikimedia Commons (verified)
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Jeti-%C3%96g%C3%BCz_Rocks_-_Issyk-Kul_Region%2C_Jeti-Oguz_District.jpg/1280px-Jeti-%C3%96g%C3%BCz_Rocks_-_Issyk-Kul_Region%2C_Jeti-Oguz_District.jpg",
     coords: [42.49, 78.39],
     crowd: "medium",
     bookable: true,
@@ -48,8 +48,8 @@ export const places: Place[] = [
       RU: "Каменный караван-сарай XV века на Шёлковом пути. Охраняемый исторический памятник.",
       KG: "Жибек жолундагы 15-кылымдын таш кербен сарайы. Корголуучу тарыхый эстелик.",
     },
-    // Tash Rabat caravanserai (Wikimedia Commons)
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Tash_Rabat_Caravanserai.jpg/1200px-Tash_Rabat_Caravanserai.jpg",
+    // Tash Rabat caravanserai, Kyrgyzstan — Wikimedia Commons (verified)
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Tash_Rabat_September_2012.jpg/1280px-Tash_Rabat_September_2012.jpg",
     coords: [40.82, 75.28],
     crowd: "low",
     bookable: false,
@@ -62,8 +62,8 @@ export const places: Place[] = [
       RU: "Второе по величине горное озеро мира. Прозрачная вода, комфортный глэмпинг и семейные отели.",
       KG: "Дүйнөдөгү экинчи чоң тоо көлү. Тунук суу, ыңгайлуу глэмпинг жана үй-бүлөлүк мейманканалар.",
     },
-    // Issyk-Kul lake shore, Kyrgyzstan (Wikimedia Commons)
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Lake_Issyk_Kul.jpg/1200px-Lake_Issyk_Kul.jpg",
+    // Lake Issyk-Kul, Kyrgyzstan — Wikimedia Commons (verified)
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Lake_Issyk-Kul%2C_Kyrgyzstan.jpg/1280px-Lake_Issyk-Kul%2C_Kyrgyzstan.jpg",
     coords: [42.45, 77.25],
     crowd: "high",
     bookable: true,
