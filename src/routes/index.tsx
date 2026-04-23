@@ -4,10 +4,11 @@ import { SmartImage } from "@/components/SmartImage";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight, Map, MessageCircle, Wallet, Compass, MapPin } from "lucide-react";
 
-// Real photos of Kyrgyzstan — Tian Shan, Song-Köl yurts, Issyk-Kul, nomadic life
+// STRICT KYRGYZSTAN-ONLY: All images sourced from Wikimedia Commons (location-verified).
+// Ala-Archa, Tian Shan, Song-Köl, Issyk-Kul — no generic global stock.
 const heroMountains = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg/1600px-Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg";
-const heroFriends = "https://images.pexels.com/photos/12530881/pexels-photo-12530881.jpeg?auto=compress&cs=tinysrgb&w=1600";
-const localCulture = "https://images.pexels.com/photos/16022118/pexels-photo-16022118.jpeg?auto=compress&cs=tinysrgb&w=1000";
+const heroFriends = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg/1600px-Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg";
+const localCulture = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Song_Kol_Lake_Kyrgyzstan.jpg/1000px-Song_Kol_Lake_Kyrgyzstan.jpg";
 const pureNature = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Lake_Issyk_Kul.jpg/1000px-Lake_Issyk_Kul.jpg";
 
 export const Route = createFileRoute("/")({
