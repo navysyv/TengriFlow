@@ -6,6 +6,7 @@ import { places, type Place } from "@/lib/places";
 import { BookingModal } from "@/components/BookingModal";
 import { Compass, Navigation, Circle, ChevronDown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { SmartImage } from "@/components/SmartImage";
 
 const MapView = lazy(() => import("@/components/MapView"));
 
@@ -109,11 +110,11 @@ function MapPage() {
           <h2 className="text-2xl font-bold mb-5">{t("map.recommends")}</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {places.map((p) => (
-              <div key={p.id} className="rounded-3xl bg-card border border-border shadow-card overflow-hidden flex flex-col">
-                <div className="relative aspect-[5/3] bg-muted">
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
+              <div key={p.id} className="rounded-3xl bg-card border border-border shadow-card overflow-hidden flex flex-col hover-lift">
+                <div className="relative aspect-[5/3]">
+                  <SmartImage src={p.image} alt={p.name} wrapperClassName="absolute inset-0" className="w-full h-full object-cover" />
                   {p.crowd === "low" && (
-                    <span className="absolute top-3 right-3 bg-foreground/80 text-background text-xs font-semibold px-3 py-1 rounded-full">
+                    <span className="absolute top-3 right-3 bg-foreground/80 text-background text-xs font-semibold px-3 py-1 rounded-full z-10">
                       {t("map.lowCrowd")}
                     </span>
                   )}
@@ -149,7 +150,7 @@ function MapPage() {
           onClick={(e) => e.stopPropagation()}
         >
           <button onClick={() => setSelected(null)} className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-background/90 flex items-center justify-center text-lg">×</button>
-          <img src={selected.image} alt={selected.name} className="w-full aspect-[16/9] object-cover" />
+          <SmartImage src={selected.image} alt={selected.name} wrapperClassName="w-full aspect-[16/9]" className="w-full h-full object-cover" />
           <div className="p-5">
             <h3 className="font-bold text-lg">{selected.name}</h3>
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{selected.description[lang]}</p>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type * as LeafletNS from "leaflet";
+import L from "leaflet";
+import "leaflet.heat";
 import { places, heatPoints, type Place } from "@/lib/places";
 
 interface MapViewProps {
@@ -11,52 +12,44 @@ interface MapViewProps {
 
 function MapViewInner({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<LeafletNS.Map | null>(null);
-  const LRef = useRef<typeof LeafletNS | null>(null);
-  const heatRef = useRef<LeafletNS.Layer | null>(null);
-  const routeRef = useRef<LeafletNS.Polyline | null>(null);
-  const markersRef = useRef<LeafletNS.Marker[]>([]);
+  const mapRef = useRef<L.Map | null>(null);
+  const heatRef = useRef<L.Layer | null>(null);
+  const routeRef = useRef<L.Polyline | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const L = (await import("leaflet")).default;
-      await import("leaflet.heat");
-      if (cancelled || !containerRef.current || mapRef.current) return;
-      LRef.current = L;
+    if (!containerRef.current || mapRef.current) return;
 
-      const map = L.map(containerRef.current, {
-        center: [41.7, 75.0],
-        zoom: 7,
-        zoomControl: true,
-        attributionControl: true,
+    const map = L.map(containerRef.current, {
+      center: [41.7, 75.0],
+      zoom: 7,
+      zoomControl: true,
+      attributionControl: true,
+    });
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "© OpenStreetMap contributors © CARTO",
+      maxZoom: 19,
+      subdomains: "abcd",
+    }).addTo(map);
+
+    mapRef.current = map;
+
+    const heat = (L as unknown as { heatLayer: (pts: [number, number, number][], opts: object) => L.Layer })
+      .heatLayer(heatPoints, {
+        radius: 55,
+        blur: 45,
+        minOpacity: 0.35,
+        maxZoom: 11,
+        gradient: { 0.2: "#34D399", 0.5: "#FBBF24", 0.8: "#F97316", 1.0: "#EF4444" },
       });
+    heat.addTo(map);
+    heatRef.current = heat;
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        attribution: "© OpenStreetMap contributors © CARTO",
-        maxZoom: 19,
-        subdomains: "abcd",
-      }).addTo(map);
-
-      mapRef.current = map;
-
-      const heat = (L as unknown as { heatLayer: (pts: [number, number, number][], opts: object) => LeafletNS.Layer })
-        .heatLayer(heatPoints, {
-          radius: 55,
-          blur: 45,
-          minOpacity: 0.35,
-          maxZoom: 11,
-          gradient: { 0.2: "#34D399", 0.5: "#FBBF24", 0.8: "#F97316", 1.0: "#EF4444" },
-        });
-      heat.addTo(map);
-      heatRef.current = heat;
-
-      setReady(true);
-    })();
+    setReady(true);
 
     return () => {
-      cancelled = true;
       mapRef.current?.remove();
       mapRef.current = null;
     };
@@ -65,8 +58,7 @@ function MapViewInner({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps
   // Markers
   useEffect(() => {
     const map = mapRef.current;
-    const L = LRef.current;
-    if (!map || !L || !ready) return;
+    if (!map || !ready) return;
 
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
@@ -77,7 +69,7 @@ function MapViewInner({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps
       const color = p.crowd === "low" ? "#10B981" : p.crowd === "medium" ? "#FBBF24" : "#EF4444";
       const icon = L.divIcon({
         className: "tf-marker",
-        html: `<div style="width:22px;height:22px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.3);"></div>`,
+        html: `<div style="width:22px;height:22px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:transform .2s;"></div>`,
         iconSize: [22, 22],
         iconAnchor: [11, 11],
       });
@@ -90,8 +82,7 @@ function MapViewInner({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps
   // Route line
   useEffect(() => {
     const map = mapRef.current;
-    const L = LRef.current;
-    if (!map || !L || !ready) return;
+    if (!map || !ready) return;
     if (routeRef.current) {
       routeRef.current.remove();
       routeRef.current = null;

@@ -5,6 +5,7 @@ import { Tengri } from "@/components/Tengri";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { Send, Coffee, Map as MapIcon, Tent, Leaf } from "lucide-react";
 import { places } from "@/lib/places";
+import { SmartImage } from "@/components/SmartImage";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
@@ -155,7 +156,7 @@ function ChatPage() {
                   {m.images && (
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       {m.images.map((src, i) => (
-                        <img key={i} src={src} alt="suggestion" className="rounded-lg aspect-[4/3] object-cover" loading="lazy" />
+                        <SmartImage key={i} src={src} alt="suggestion" wrapperClassName="rounded-lg aspect-[4/3]" className="w-full h-full object-cover" />
                       ))}
                     </div>
                   )}

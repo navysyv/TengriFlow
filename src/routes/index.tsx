@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
+import { SmartImage } from "@/components/SmartImage";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight, Map, MessageCircle, Wallet, Compass, MapPin } from "lucide-react";
 
-// Real stock photos of Kyrgyzstan (Unsplash)
-const heroMountains = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1600&q=80&auto=format&fit=crop";
-const heroFriends = "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1600&q=80&auto=format&fit=crop";
-const localCulture = "https://images.unsplash.com/photo-1601247309108-2f021dc1ed1f?w=1000&q=80&auto=format&fit=crop";
-const pureNature = "https://images.unsplash.com/photo-1583309217394-d6f0c1f1a3f1?w=1000&q=80&auto=format&fit=crop";
+// Real photos of Kyrgyzstan — Tian Shan, Song-Köl yurts, Issyk-Kul, nomadic life
+const heroMountains = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg/1600px-Ala_Archa_National_Park%2C_Kyrgyzstan_%2843285661574%29.jpg";
+const heroFriends = "https://images.pexels.com/photos/12530881/pexels-photo-12530881.jpeg?auto=compress&cs=tinysrgb&w=1600";
+const localCulture = "https://images.pexels.com/photos/16022118/pexels-photo-16022118.jpeg?auto=compress&cs=tinysrgb&w=1000";
+const pureNature = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Lake_Issyk_Kul.jpg/1000px-Lake_Issyk_Kul.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,15 +70,17 @@ function Home() {
       {/* IMAGE COLLAGE */}
       <section className="container mx-auto px-4 md:px-6 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-          <div className="md:col-span-2 relative rounded-3xl overflow-hidden aspect-[16/11] md:aspect-[4/3] bg-muted">
-            <img
+          <div className="md:col-span-2 relative rounded-3xl overflow-hidden aspect-[16/11] md:aspect-[4/3]">
+            <SmartImage
               src={heroFriends}
-              alt="Friends hiking in Kyrgyzstan"
+              alt="Hiking through the Tian Shan mountains, Kyrgyzstan"
+              loading="eager"
+              wrapperClassName="absolute inset-0"
               className="w-full h-full object-cover"
-              width={1024}
-              height={1280}
+              width={1600}
+              height={1200}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none" />
             <div className="absolute bottom-0 left-0 p-6 md:p-10 text-white">
               <h2 className="text-3xl md:text-5xl font-bold leading-tight">
                 {t("home.ancient")}<br />{t("home.modern")}
@@ -86,14 +89,14 @@ function Home() {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-1 gap-4 md:gap-5">
-            <div className="relative rounded-3xl overflow-hidden aspect-square md:aspect-[4/3] bg-muted">
-              <img src={localCulture} alt="Local culture" className="w-full h-full object-cover" loading="lazy" width={768} height={896} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="relative rounded-3xl overflow-hidden aspect-square md:aspect-[4/3]">
+              <SmartImage src={localCulture} alt="Yurts on Song-Köl plateau, Kyrgyzstan" wrapperClassName="absolute inset-0" className="w-full h-full object-cover" width={1000} height={1000} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <span className="absolute bottom-4 left-4 text-white font-bold text-lg">{t("home.localCulture")}</span>
             </div>
-            <div className="relative rounded-3xl overflow-hidden aspect-square md:aspect-[4/3] bg-muted">
-              <img src={pureNature} alt="Nature" className="w-full h-full object-cover" loading="lazy" width={768} height={896} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="relative rounded-3xl overflow-hidden aspect-square md:aspect-[4/3]">
+              <SmartImage src={pureNature} alt="Lake Issyk-Kul, Kyrgyzstan" wrapperClassName="absolute inset-0" className="w-full h-full object-cover" width={1000} height={1000} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <span className="absolute bottom-4 left-4 text-white font-bold text-lg">{t("home.pureNature")}</span>
             </div>
           </div>
