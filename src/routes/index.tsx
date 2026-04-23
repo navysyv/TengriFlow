@@ -2,10 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { useI18n } from "@/lib/i18n";
 import { ArrowRight, Map, MessageCircle, Wallet, Compass, MapPin } from "lucide-react";
-import heroMountains from "@/assets/hero-mountains.jpg";
-import heroFriends from "@/assets/hero-friends.jpg";
-import localCulture from "@/assets/local-culture.jpg";
-import pureNature from "@/assets/pure-nature.jpg";
+
+// Real stock photos of Kyrgyzstan (Unsplash)
+const heroMountains = "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1600&q=80&auto=format&fit=crop";
+const heroFriends = "https://images.unsplash.com/photo-1551632811-561732d1e306?w=1600&q=80&auto=format&fit=crop";
+const localCulture = "https://images.unsplash.com/photo-1601247309108-2f021dc1ed1f?w=1000&q=80&auto=format&fit=crop";
+const pureNature = "https://images.unsplash.com/photo-1583309217394-d6f0c1f1a3f1?w=1000&q=80&auto=format&fit=crop";
 
 export const Route = createFileRoute("/")({
   head: () => ({
