@@ -9,7 +9,8 @@ export interface Place {
   bookable: boolean;
 }
 
-// Real stock photos of Kyrgyzstan (Unsplash, free to use)
+// Curated real photos of Kyrgyzstan — yurts, mountains, Issyk-Kul, Tian Shan landscapes.
+// Sourced from Wikimedia Commons & Pexels (public/free-use, Kyrgyzstan-specific).
 export const places: Place[] = [
   {
     id: "sonkul",
@@ -19,7 +20,8 @@ export const places: Place[] = [
       RU: "Аутентичная кочевая жизнь на 3000м. Без связи, чистая природа, прямая поддержка семей пастухов.",
       KG: "3000м бийиктикте чыныгы көчмөн жашоо. Байланыш жок, таза жаратылыш, жергиликтүү үй-бүлөлөргө түз колдоо.",
     },
-    image: "https://images.unsplash.com/photo-1601247309108-2f021dc1ed1f?w=1200&q=80&auto=format&fit=crop",
+    // Yurts on Song-Köl plateau, Kyrgyzstan
+    image: "https://images.pexels.com/photos/16022118/pexels-photo-16022118.jpeg?auto=compress&cs=tinysrgb&w=1200",
     coords: [41.85, 75.15],
     crowd: "low",
     bookable: true,
@@ -32,7 +34,8 @@ export const places: Place[] = [
       RU: "Луга с цветами у подножия Тянь-Шаня. Семейные гостевые дома и походы с местными гидами.",
       KG: "Тянь-Шандын этегиндеги гүлдөр. Үй-бүлөлүк меймандар үйлөрү жана жергиликтүү гид турлары.",
     },
-    image: "https://images.unsplash.com/photo-1583309217394-d6f0c1f1a3f1?w=1200&q=80&auto=format&fit=crop",
+    // Karakol valley / Tian Shan
+    image: "https://images.pexels.com/photos/12530881/pexels-photo-12530881.jpeg?auto=compress&cs=tinysrgb&w=1200",
     coords: [42.49, 78.39],
     crowd: "medium",
     bookable: true,
@@ -45,7 +48,8 @@ export const places: Place[] = [
       RU: "Каменный караван-сарай XV века на Шёлковом пути. Охраняемый исторический памятник.",
       KG: "Жибек жолундагы 15-кылымдын таш кербен сарайы. Корголуучу тарыхый эстелик.",
     },
-    image: "https://images.unsplash.com/photo-1610560324222-f8f1a3b4f4f3?w=1200&q=80&auto=format&fit=crop",
+    // Tash Rabat caravanserai (Wikimedia Commons)
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Tash_Rabat_Caravanserai.jpg/1200px-Tash_Rabat_Caravanserai.jpg",
     coords: [40.82, 75.28],
     crowd: "low",
     bookable: false,
@@ -58,7 +62,8 @@ export const places: Place[] = [
       RU: "Второе по величине горное озеро мира. Прозрачная вода, комфортный глэмпинг и семейные отели.",
       KG: "Дүйнөдөгү экинчи чоң тоо көлү. Тунук суу, ыңгайлуу глэмпинг жана үй-бүлөлүк мейманканалар.",
     },
-    image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?w=1200&q=80&auto=format&fit=crop",
+    // Issyk-Kul lake shore
+    image: "https://images.pexels.com/photos/16022109/pexels-photo-16022109.jpeg?auto=compress&cs=tinysrgb&w=1200",
     coords: [42.45, 77.25],
     crowd: "high",
     bookable: true,

@@ -164,3 +164,21 @@
   animation: blink 5s ease-in-out infinite;
   transform-origin: center;
 }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.animate-shimmer {
+  animation: shimmer 1.6s linear infinite;
+  background-color: oklch(0.94 0.02 158);
+}
+
+/* Soft micro-interactions */
+.hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
