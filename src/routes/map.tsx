@@ -7,7 +7,7 @@ import { BookingModal } from "@/components/BookingModal";
 import { Compass, Navigation, Circle, ChevronDown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { SmartImage } from "@/components/SmartImage";
-import { CITIES } from "@/components/MapView";
+import { CITIES } from "@/lib/cities";
 
 const MapView = lazy(() => import("@/components/MapView"));
 
