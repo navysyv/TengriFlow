@@ -125,20 +125,23 @@ export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: Ma
     const colorFor = (level: "high" | "mid" | "low") =>
       level === "high" ? "rgba(239,68,68," : level === "mid" ? "rgba(251,191,36," : "rgba(16,185,129,";
 
-    const circles = HEAT_ZONES.map((z) => {
-      const { x, y } = project(z.lat, z.lng);
-      const r = kmToUnits(z.r);
+    const gradients = HEAT_ZONES.map((z, i) => {
       const c = colorFor(z.level);
-      return `<radialGradient id="g${z.lat}${z.lng}" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="${c}0.65)"/>
-        <stop offset="60%" stop-color="${c}0.25)"/>
+      return `<radialGradient id="hz${i}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="${c}0.7)"/>
+        <stop offset="55%" stop-color="${c}0.3)"/>
         <stop offset="100%" stop-color="${c}0)"/>
-      </radialGradient>
-      <circle cx="${x}" cy="${y}" r="${r}" fill="url(#g${z.lat}${z.lng})"/>`;
+      </radialGradient>`;
     }).join("");
 
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;filter:blur(14px);opacity:0.85">
-      <defs>${HEAT_ZONES.map(() => "").join("")}</defs>
+    const circles = HEAT_ZONES.map((z, i) => {
+      const { x, y } = project(z.lat, z.lng);
+      const r = kmToUnits(z.r);
+      return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#hz${i})"/>`;
+    }).join("");
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;filter:blur(18px);opacity:0.8">
+      <defs>${gradients}</defs>
       ${circles}
     </svg>`;
 
