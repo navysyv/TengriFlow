@@ -196,7 +196,7 @@ function RouteSelect({ ring, dot, label, value, onChange }: { ring: string; dot:
           className="w-full h-12 pl-4 pr-10 rounded-full border border-border bg-background text-sm appearance-none cursor-pointer hover:border-primary/50 transition"
         >
           <option value="">{label}</option>
-          {places.map((p) => (<option key={p.id} value={p.id}>{p.name}</option>))}
+          {CITIES.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
         </select>
         <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       </div>
