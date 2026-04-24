@@ -8,25 +8,38 @@ interface MapViewProps {
   showHidden: boolean;
 }
 
-// Major Kyrgyz cities for labels
-const CITIES: { name: string; coords: [number, number] }[] = [
-  { name: "Bishkek", coords: [42.8746, 74.5698] },
-  { name: "Osh", coords: [40.5283, 72.7985] },
-  { name: "Karakol", coords: [42.4907, 78.3936] },
-  { name: "Naryn", coords: [41.4287, 75.9911] },
-  { name: "Talas", coords: [42.5228, 72.2425] },
-  { name: "Jalal-Abad", coords: [40.9333, 73.0] },
-  { name: "Cholpon-Ata", coords: [42.6489, 77.0814] },
-  { name: "Issyk-Kul", coords: [42.45, 77.25] },
+// Major Kyrgyz cities — used for routing AND labels
+export const CITIES: { id: string; name: string; coords: [number, number]; tier: "primary" | "secondary" }[] = [
+  { id: "bishkek", name: "Bishkek", coords: [42.8746, 74.5698], tier: "primary" },
+  { id: "osh", name: "Osh", coords: [40.5283, 72.7985], tier: "primary" },
+  { id: "karakol", name: "Karakol", coords: [42.4907, 78.3936], tier: "primary" },
+  { id: "issykkul", name: "Issyk-Kul", coords: [42.45, 77.25], tier: "primary" },
+  { id: "naryn", name: "Naryn", coords: [41.4287, 75.9911], tier: "primary" },
+  { id: "talas", name: "Talas", coords: [42.5228, 72.2425], tier: "secondary" },
+  { id: "jalalabad", name: "Jalal-Abad", coords: [40.9333, 73.0], tier: "secondary" },
+  { id: "cholpon", name: "Cholpon-Ata", coords: [42.6489, 77.0814], tier: "secondary" },
+];
+
+// Heatmap zones — soft, large, continuous regions (lat, lng, radiusKm, intensity)
+const HEAT_ZONES: { lat: number; lng: number; r: number; level: "high" | "mid" | "low" }[] = [
+  { lat: 42.87, lng: 74.59, r: 55, level: "high" },   // Bishkek
+  { lat: 42.65, lng: 77.08, r: 70, level: "high" },   // Cholpon-Ata / N shore
+  { lat: 42.45, lng: 77.25, r: 90, level: "mid" },    // Issyk-Kul broad
+  { lat: 42.49, lng: 78.39, r: 50, level: "mid" },    // Karakol
+  { lat: 40.53, lng: 72.80, r: 60, level: "high" },   // Osh
+  { lat: 40.93, lng: 73.00, r: 45, level: "mid" },    // Jalal-Abad
+  { lat: 42.52, lng: 72.24, r: 50, level: "low" },    // Talas
+  { lat: 41.42, lng: 75.98, r: 70, level: "low" },    // Naryn
+  { lat: 41.85, lng: 75.15, r: 60, level: "low" },    // Son-Kul
 ];
 
 export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
-  const layersRef = useRef<{ markers: any[]; route: any | null; heat: any[] }>({
+  const layersRef = useRef<{ markers: any[]; route: any | null; heat: any | null }>({
     markers: [],
     route: null,
-    heat: [],
+    heat: null,
   });
   const LRef = useRef<any>(null);
 
@@ -57,24 +70,26 @@ export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: Ma
       });
       mapRef.current = map;
 
-      // Clean light tile layer (CartoDB Positron) — readable, modern look
+      // Clean light tile layer (CartoDB Positron)
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        attribution: "&copy; OpenStreetMap &copy; CARTO",
         subdomains: "abcd",
         maxZoom: 19,
       }).addTo(map);
 
       // City labels (always visible)
       CITIES.forEach((c) => {
+        const isPrimary = c.tier === "primary";
         const icon = L.divIcon({
           className: "tf-city-label",
-          html: `<div class="tf-city"><span class="tf-city-dot"></span><span class="tf-city-name">${c.name}</span></div>`,
+          html: `<div class="tf-city ${isPrimary ? "tf-city-primary" : ""}"><span class="tf-city-dot"></span><span class="tf-city-name">${c.name}</span></div>`,
           iconSize: [120, 24],
           iconAnchor: [6, 12],
         });
         L.marker(c.coords, { icon, interactive: false, keyboard: false }).addTo(map);
       });
 
+      renderHeat();
       renderPlaces();
       renderRoute();
     })();
@@ -88,6 +103,60 @@ export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: Ma
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Smooth heatmap using SVG overlay with large blurred radial gradients
+  const renderHeat = () => {
+    const L = LRef.current;
+    const map = mapRef.current;
+    if (!L || !map) return;
+    if (layersRef.current.heat) {
+      map.removeLayer(layersRef.current.heat);
+      layersRef.current.heat = null;
+    }
+
+    // Bounding box covering all heat zones with padding
+    const bounds = L.latLngBounds(HEAT_ZONES.map((z) => [z.lat, z.lng] as [number, number])).pad(0.5);
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    const W = 1000;
+    const H = 700;
+    const lngSpan = ne.lng - sw.lng;
+    const latSpan = ne.lat - sw.lat;
+
+    const project = (lat: number, lng: number) => {
+      const x = ((lng - sw.lng) / lngSpan) * W;
+      const y = (1 - (lat - sw.lat) / latSpan) * H;
+      return { x, y };
+    };
+
+    // Approximate km → svg units (use 1 deg lat ≈ 111km)
+    const kmToUnits = (km: number) => (km / 111) * (H / latSpan);
+
+    const colorFor = (level: "high" | "mid" | "low") =>
+      level === "high" ? "rgba(239,68,68," : level === "mid" ? "rgba(251,191,36," : "rgba(16,185,129,";
+
+    const circles = HEAT_ZONES.map((z) => {
+      const { x, y } = project(z.lat, z.lng);
+      const r = kmToUnits(z.r);
+      const c = colorFor(z.level);
+      return `<radialGradient id="g${z.lat}${z.lng}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="${c}0.65)"/>
+        <stop offset="60%" stop-color="${c}0.25)"/>
+        <stop offset="100%" stop-color="${c}0)"/>
+      </radialGradient>
+      <circle cx="${x}" cy="${y}" r="${r}" fill="url(#g${z.lat}${z.lng})"/>`;
+    }).join("");
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;filter:blur(14px);opacity:0.85">
+      <defs>${HEAT_ZONES.map(() => "").join("")}</defs>
+      ${circles}
+    </svg>`;
+
+    const url = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+    const overlay = L.imageOverlay(url, bounds, { opacity: 1, interactive: false, className: "tf-heat-overlay" }).addTo(map);
+    layersRef.current.heat = overlay;
+  };
 
   const renderPlaces = () => {
     const L = LRef.current;
@@ -120,50 +189,44 @@ export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: Ma
       layersRef.current.route = null;
     }
     if (!routeFrom || !routeTo) return;
-    const a = places.find((p) => p.id === routeFrom);
-    const b = places.find((p) => p.id === routeTo);
+    const a = CITIES.find((c) => c.id === routeFrom);
+    const b = CITIES.find((c) => c.id === routeTo);
     if (!a || !b) return;
 
-    // Build a slightly curved polyline between A and B (simulated road)
     const lat1 = a.coords[0];
     const lng1 = a.coords[1];
     const lat2 = b.coords[0];
     const lng2 = b.coords[1];
     const points: [number, number][] = [];
-    const steps = 24;
-    const midLat = (lat1 + lat2) / 2 + (lng2 - lng1) * 0.08;
-    const midLng = (lng1 + lng2) / 2 - (lat2 - lat1) * 0.08;
+    const steps = 32;
+    const midLat = (lat1 + lat2) / 2 + (lng2 - lng1) * 0.06;
+    const midLng = (lng1 + lng2) / 2 - (lat2 - lat1) * 0.06;
     for (let i = 0; i <= steps; i++) {
       const t = i / steps;
-      // Quadratic bezier
       const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * midLat + t * t * lat2;
       const lng = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * midLng + t * t * lng2;
       points.push([lat, lng]);
     }
 
     const route = L.layerGroup([
-      L.polyline(points, {
-        color: "#10B981",
-        weight: 5,
-        opacity: 0.9,
-        dashArray: "1 10",
-        lineCap: "round",
-      }),
-      L.circleMarker(a.coords, { radius: 7, color: "#fff", weight: 3, fillColor: "#10B981", fillOpacity: 1 }),
-      L.circleMarker(b.coords, { radius: 7, color: "#fff", weight: 3, fillColor: "#10B981", fillOpacity: 1 }),
+      // Soft halo
+      L.polyline(points, { color: "#10B981", weight: 12, opacity: 0.18, lineCap: "round" }),
+      // Main line
+      L.polyline(points, { color: "#10B981", weight: 4, opacity: 0.95, dashArray: "1 9", lineCap: "round" }),
+      // Endpoints
+      L.circleMarker(a.coords, { radius: 8, color: "#fff", weight: 3, fillColor: "#10B981", fillOpacity: 1 }),
+      L.circleMarker(b.coords, { radius: 8, color: "#fff", weight: 3, fillColor: "#10B981", fillOpacity: 1 }),
     ]).addTo(map);
     layersRef.current.route = route;
 
     map.fitBounds(L.latLngBounds([a.coords, b.coords]).pad(0.4), { animate: true });
   };
 
-  // Re-render markers when filter changes
   useEffect(() => {
     renderPlaces();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showHidden]);
 
-  // Re-render route when selection changes
   useEffect(() => {
     renderRoute();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,7 +245,7 @@ export default function MapView({ onSelect, routeFrom, routeTo, showHidden }: Ma
 
       {(routeFrom && routeTo) && (
         <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-[400] rounded-full bg-background/90 px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur">
-          Optimized route based on accessibility and crowd distribution
+          Optimized route between regions for better travel distribution
         </div>
       )}
 
